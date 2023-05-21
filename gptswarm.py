@@ -55,6 +55,7 @@ def main(question=None):
     print("Starting parallel GPT-4 queries...")
 
     start_time = time.time()
+    timestamps = []  # List to store timestamps
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = [executor.submit(ask_gpt4, task) for task in tasks]
@@ -62,7 +63,9 @@ def main(question=None):
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
             response = future.result()
             if response is not None:  # skip if API call failed
-                filename = os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")
+                timestamp = int(time.time())
+                timestamps.append(timestamp)  # Store the timestamp
+                filename = os.path.join(results_dir, f"task_{i}_{timestamp}.txt")
                 save_to_file(response, filename)
                 print(f"Task {i+1} completed.")
 
@@ -70,7 +73,7 @@ def main(question=None):
 
     with open(os.path.join(results_dir, f"final_output_{int(time.time())}.txt"), 'w') as outfile:
         for i in range(len(tasks)):
-            with open(os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")) as infile:
+            with open(os.path.join(results_dir, f"task_{i}_{timestamps[i]}.txt")) as infile:
                 outfile.write(infile.read())
 
     print("All tasks have completed. The combined response from GPT-4 is saved in the 'results' directory.")
