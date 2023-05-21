@@ -37,44 +37,43 @@ def save_to_file(data, file_name):
         print(f"Error occurred while saving data: {e}")
         raise
 
-def main():
+def main(question=None):
     if not os.path.exists(results_dir):  # create results directory if it does not exist
         os.makedirs(results_dir)
 
-    while True:
+    if question is None:
         question = input("Ask a question (or type 'exit' to quit): ")
-
         if question.lower() == "exit":
-            break
+            return
 
-        tasks = ask_gpt4(question)
-        if tasks is None:
-            continue  # skip if API call failed
+    tasks = ask_gpt4(question)
+    if tasks is None:
+        return  # skip if API call failed
 
-        tasks = tasks.split("\n")  # assuming tasks are separated by newlines
-        print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
-        print("Starting parallel GPT-4 queries...")
+    tasks = tasks.split("\n")  # assuming tasks are separated by newlines
+    print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
+    print("Starting parallel GPT-4 queries...")
 
-        start_time = time.time()
+    start_time = time.time()
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(ask_gpt4, task) for task in tasks]
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(ask_gpt4, task) for task in tasks]
 
-            for i, future in enumerate(concurrent.futures.as_completed(futures)):
-                response = future.result()
-                if response is not None:  # skip if API call failed
-                    filename = os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")
-                    save_to_file(response, filename)
-                    print(f"Task {i+1} completed.")
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            response = future.result()
+            if response is not None:  # skip if API call failed
+                filename = os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")
+                save_to_file(response, filename)
+                print(f"Task {i+1} completed.")
 
-        print(f"All tasks completed in {time.time() - start_time} seconds.")
+    print(f"All tasks completed in {time.time() - start_time} seconds.")
 
-        with open(os.path.join(results_dir, f"final_output_{int(time.time())}.txt"), 'w') as outfile:
-            for i in range(len(tasks)):
-                with open(os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")) as infile:
-                    outfile.write(infile.read())
+    with open(os.path.join(results_dir, f"final_output_{int(time.time())}.txt"), 'w') as outfile:
+        for i in range(len(tasks)):
+            with open(os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")) as infile:
+                outfile.write(infile.read())
 
-        print("All tasks have completed. The combined response from GPT-4 is saved in the 'results' directory.")
+    print("All tasks have completed. The combined response from GPT-4 is saved in the 'results' directory.")
 
 if __name__ == "__main__":
     main()
