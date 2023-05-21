@@ -81,7 +81,7 @@ def main():
 
         # Combine tasks into 1 large query for GPT-4-32k
         combined_tasks = "\n".join([open(os.path.join(results_dir, f"task_{i}.txt")).read() for i in range(len(tasks))])
-        final_response = ask_gpt4(f"I have completed the tasks. Here they are: {combined_tasks}. Can you help me combine this information into one coherent answer?", model="gpt-4.0-32k")
+        final_response = ask_gpt4(f"I have completed the tasks. Here they are: {combined_tasks}. Can you help me combine this information into one coherent answer?", model="gpt-4-32k")
 
         if final_response is not None:  # skip if API call failed
             print("All tasks have completed. The combined response from GPT-4-32k is:")
