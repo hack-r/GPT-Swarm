@@ -2,6 +2,8 @@
 
 This repository contains code for GPT-Swarm, a project that leverages the power of OpenAI's GPT models to automate tasks and generate code solutions. The main scripts included are `auto-gptswarm.py` and `gptswarm.py`. The former is a work-in-progress script that uses the `gptswarm` module, while the latter is the module responsible for interacting with the OpenAI API.
 
+As of now, the intermediate tasks are working well, but the final task often leads to unexpected results. I'm working on it. This will be much more powerful when / if OpenAI enables access to gpt-4-32k.
+
 ## auto-gptswarm.py
 
 This script serves as a work-in-progress implementation of GPT-Swarm. Its purpose is to automate the process of generating code solutions for a list of predefined questions. The code performs the following steps:
