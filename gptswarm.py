@@ -37,46 +37,75 @@ def save_to_file(data, file_name):
         print(f"Error occurred while saving data: {e}")
         raise
 
-def main(question=None):
+def main():
     if not os.path.exists(results_dir):  # create results directory if it does not exist
         os.makedirs(results_dir)
 
-    if question is None:
+    while True:
         question = input("Ask a question (or type 'exit' to quit): ")
+
         if question.lower() == "exit":
-            return
+            break
 
-    tasks = ask_gpt4(question)
-    if tasks is None:
-        return  # skip if API call failed
+        # Confirm if the question is about writing software
+        confirmation = ask_gpt4(f"Please answer YES or NO, with no additional text or punctuation - is the following question about writing a piece of software?: '{question}'")
+        if confirmation is None or confirmation.lower() != "yes":
+            # Proceed with normal flow
+            tasks = ask_gpt4(f"Break this apart into separate smaller, more manageable tasks that can be worked on in parallel: {question}")
+            if tasks is None:
+                continue  # skip if API call failed
 
-    tasks = tasks.split("\n")  # assuming tasks are separated by newlines
-    print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
-    print("Starting parallel GPT-4 queries...")
+            tasks = tasks.split("\n")  # assuming tasks are separated by newlines
+            print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
+            print("Starting parallel GPT-4 queries...")
+        else:
+            print("The question is about writing a piece of software. Emphasizing working code without placeholders.")
 
-    start_time = time.time()
-    timestamps = []  # List to store timestamps
+            # Adjust subsequent questions to emphasize working code without placeholders
+            tasks = ask_gpt4(f'''Break this apart into separate smaller, more manageable code-writing 
+                             tasks that can be worked on in parallel, with emphasis on writing working 
+                             code without the use of placeholders. Write each task as a ChatGPT
+                             prompt wherein you strongly emphasize that you want the reply to be 
+                             real code, not pseudocode and not high-level instructions. 
+                             Here's the request: {question}''')
+            if tasks is None:
+                continue  # skip if API call failed
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [executor.submit(ask_gpt4, task) for task in tasks]
+            tasks = tasks.split("\n")  # assuming tasks are separated by newlines
+            print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
+            print("Starting parallel GPT-4 queries with emphasis on working code...")
 
-        for i, future in enumerate(concurrent.futures.as_completed(futures)):
-            response = future.result()
-            if response is not None:  # skip if API call failed
-                timestamp = int(time.time())
-                timestamps.append(timestamp)  # Store the timestamp
-                filename = os.path.join(results_dir, f"task_{i}_{timestamp}.txt")
-                save_to_file(response, filename)
-                print(f"Task {i+1} completed.")
+        futures = ask_gpt4_parallel(tasks)
 
-    print(f"All tasks completed in {time.time() - start_time} seconds.")
+        # Monitor the status of the queries
+        while not all([future.done() for future in futures]):
+            print(f"{sum([future.done() for future in futures])}/{len(tasks)} tasks completed.")
+            time.sleep(1)
 
-    with open(os.path.join(results_dir, f"final_output_{int(time.time())}.txt"), 'w') as outfile:
-        for i in range(len(tasks)):
-            with open(os.path.join(results_dir, f"task_{i}_{timestamps[i]}.txt")) as infile:
-                outfile.write(infile.read())
+        print("All tasks completed.")
 
-    print("All tasks have completed. The combined response from GPT-4 is saved in the 'results' directory.")
+        # Combine tasks into 1 large query for GPT-4
+        combined_tasks = "\n".join([future.result() for future in futures])
+
+        final_question = f"I have completed several related tasks. Here they are: {combined_tasks}. Can you help me combine this information into one coherent answer?"
+
+        # Ask GPT-4 to review and combine the intermediate answers into 1 coherent final answer
+        final_response = ask_gpt4(final_question, model="gpt-4")
+
+        # Validate the final output
+        snippet = final_response[:100]  # first 100 tokens
+        validation = ask_gpt4(f"Does the following appear to be either a detailed code example or useful, actionable instructions for a user in response to a question they’ve asked? Answer YES or NO only: {snippet}")
+
+        # If validation is NO, then ask the question again with extra emphasis
+        if validation.lower() == "no":
+            final_response = ask_gpt4(f'''Please make sure your response includes detailed code or actionable instructions for a user in response to a question they've asked: {final_question}''', model="gpt-4")
+
+        if final_response is not None:  # skip if API call failed
+            print("All tasks have completed. The combined response from GPT-4 is:")
+            print(final_response)
+            filename = os.path.join(results_dir, f"final_output_{int(time.time())}.txt")
+            save_to_file(final_response, filename)
+
 
 if __name__ == "__main__":
     main()
