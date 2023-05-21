@@ -28,6 +28,11 @@ def ask_gpt4(question, model="gpt-3.5-turbo"):
         print(f"Error occurred while communicating with the API: {e}")
         raise
 
+def ask_gpt4_parallel(tasks):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = {executor.submit(ask_gpt4, task) for task in tasks}
+        return futures
+
 def save_to_file(data, file_name):
     try:
         with open(file_name, 'w') as outfile:
