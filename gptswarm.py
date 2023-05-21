@@ -96,7 +96,6 @@ def main(question=None):
     # Combine tasks into 1 large query for GPT-4-32k
     combined_tasks = "\n".join([open(os.path.join(results_dir, f"task_{i}_{int(timeMy apologies, it seems the response was cut off. Here is the full updated version of the `main` function:
 
-```python
 def main(question=None):
     if not os.path.exists(results_dir):  # create results directory if it does not exist
         os.makedirs(results_dir)
@@ -161,9 +160,7 @@ def main(question=None):
         # Split the combined tasks into chunks
         chunk_size = 8000  # Define the desired chunk size
         chunks = [combined_tasks[i:i + chunk_size] for i in range(0, len(combined_tasks), chunk_size)]
-        print(f"The combined tasks exceedI apologize for the continued truncation. Let me continue where it left off:
 
-```python
         print(f"The combined tasks exceed 8000 tokens and will be split into {len(chunks)} chunks.")
 
         # Send chunks one by one and wait for completion
