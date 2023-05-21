@@ -37,64 +37,6 @@ def save_to_file(data, file_name):
         print(f"Error occurred while saving data: {e}")
         raise
 
-def main(question=None):
-    if not os.path.exists(results_dir):  # create results directory if it does not exist
-        os.makedirs(results_dir)
-
-    if question is None:
-        question = input("Ask a question (or type 'exit' to quit): ")
-
-    if question.lower() == "exit":
-        return
-
-    # Confirm if the question is about writing software
-    confirmation = ask_gpt4(f"Please answer YES or NO, with no additional text or punctuation - is the following question about writing a piece of software?: '{question}'")
-    if confirmation is None or confirmation.lower() != "yes":
-        # Proceed with normal flow
-        tasks = ask_gpt4(f"Break this apart into separate smaller, more manageable tasks that can be worked on in parallel: {question}")
-        if tasks is None:
-            return  # skip if API call failed
-
-        tasks = tasks.split("\n")  # assuming tasks are separated by newlines
-        print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
-        print("Starting parallel GPT-4 queries...")
-    else:
-        print("The question is about writing a piece of software. Emphasizing working code without placeholders.")
-
-        # Adjust subsequent questions to emphasize working code without placeholders
-        tasks = ask_gpt4(f'''Break this apart into separate smaller, more manageable code-writing 
-                         tasks that can be worked on in parallel, with emphasis on writing working 
-                         code without the use of placeholders. Write each task as a ChatGPT
-                         prompt wherein you strongly emphasize that you want the reply to be 
-                         real code, not pseudocode and not high-level instructions. 
-                         Here's the request: {question}''')
-        if tasks is None:
-            return  # skip if API call failed
-
-        tasks = tasks.split("\n")  # assuming tasks are separated by newlines
-        print(f"GPT-4 has broken the task into {len(tasks)} smaller tasks.")
-        print("Starting parallel GPT-4 queries with emphasis on working code...")
-
-    start_time = time.time()
-    futures = ask_gpt4_parallel(tasks)
-
-    # Monitor the status of the queries
-    while not all([future.done() for future in futures]):
-        print(f"{sum([future.done() for future in futures])}/{len(tasks)} tasks completed.")
-        time.sleep(1)
-
-    print(f"All tasks completed in {time.time() - start_time} seconds.")
-
-    # Save results of each GPT-4 instance as text files
-    for i, future in enumerate(futures):
-        response = future.result()
-        if response is not None:  # skip if API call failed
-            filename = os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")
-            save_to_file(response, filename)
-            print(f"Task {i+1} completed.")
-
-    # Combine tasks into 1 large query for GPT-4-32k
-    combined_tasks = "\n".join([open(os.path.join(results_dir, f"task_{i}_{int(timeMy apologies, it seems the response was cut off. Here is the full updated version of the `main` function:
 
 def main(question=None):
     if not os.path.exists(results_dir):  # create results directory if it does not exist
