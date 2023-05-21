@@ -67,7 +67,12 @@ def main():
             print("The question is about writing a piece of software. Emphasizing working code without placeholders.")
 
             # Adjust subsequent questions to emphasize working code without placeholders
-            tasks = ask_gpt4(f"Break this apart into separate smaller, more manageable tasks that can be worked on in parallel, with emphasis on writing working code without the use of placeholders: {question}")
+            tasks = ask_gpt4(f'''Break this apart into separate smaller, more manageable code-writing 
+                             tasks that can be worked on in parallel, with emphasis on writing working 
+                             code without the use of placeholders. Write each task as a ChatGPT
+                             prompt wherein you strongly emphasize that you want the reply to be 
+                             real code, not pseudocode and not high-level instructions. 
+                             Here's the request: {question}''')
             if tasks is None:
                 continue  # skip if API call failed
 
@@ -89,12 +94,12 @@ def main():
         for i, future in enumerate(futures):
             response = future.result()
             if response is not None:  # skip if API call failed
-                filename = os.path.join(results_dir, f"task_{i}.txt")
+                filename = os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")
                 save_to_file(response, filename)
                 print(f"Task {i+1} completed.")
 
         # Combine tasks into 1 large query for GPT-4-32k
-        combined_tasks = "\n".join([open(os.path.join(results_dir, f"task_{i}.txt")).read() for i in range(len(tasks))])
+        combined_tasks = "\n".join([open(os.path.join(results_dir, f"task_{i}_{int(time.time())}.txt")).read() for i in range(len(tasks))])
 
         # Check if the combined_tasks exceed 8000 tokens
         if len(combined_tasks.split()) > 8000:
@@ -108,19 +113,27 @@ def main():
                 if i < len(chunks) - 1:
                     ask_gpt4(f"I have completed part {i + 1} of the tasks. Here is the chunk: {chunk}.")
                 else:
-                    final_response = ask_gpt4(
-                        f"I have completed part {i + 1} of the tasks. Here is the final chunk: {chunk}. Can you help me combine this information into one coherent answer?",
-                        model="gpt-4")
+                    final_question = f"I have completed part {i + 1} of the tasks. Here is the final chunk: {chunk}. Can you help me combine this information into one coherent answer?"
+                    ask_question = input(f"Final question:\n{final_question}\nDo you want to edit the question? (YES/NO): ")
+                    if ask_question.lower() == "yes":
+                        edited_question = input("Please provide the edited question: ")
+                        final_response = ask_gpt4(edited_question, model="gpt-4")
+                    else:
+                        final_response = ask_gpt4(final_question, model="gpt-4")
         else:
-            final_response = ask_gpt4(
-                f"I have completed the tasks. Here they are: {combined_tasks}. Can you help me combine this information into one coherent answer?",
-                model="gpt-4")  # -32k
+            final_question = f"I have completed several related code-writing tasks. Here they are: {combined_tasks}. Can you help me combine this information into one coherent answer?"
+            ask_question = input(f"Final question:\n{final_question}\nDo you want to edit the question? (YES/NO): ")
+            if ask_question.lower() == "yes":
+                edited_question = input("Please provide the edited question: ")
+                final_response = ask_gpt4(edited_question, model="gpt-4")
+            else:
+                final_response = ask_gpt4(final_question, model="gpt-4")
 
         if final_response is not None:  # skip if API call failed
             print("All tasks have completed. The combined response from GPT-4 is:")
             print(final_response)
-            filename = os.path.join(results_dir, f”final_output.txt")
+            filename = os.path.join(results_dir, f"final_output_{int(time.time())}.txt")
             save_to_file(final_response, filename)
-                                    
+
 if __name__ == "__main__":
     main()
