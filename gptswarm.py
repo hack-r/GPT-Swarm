@@ -14,7 +14,7 @@ if openai.api_key is None:
 # Directory where the results will be stored
 results_dir = "results"
 
-def ask_gpt4(question, model="gpt-3.5-turbo"):
+def ask_gpt4(question, model="gpt-4"):
     try:
         response = openai.ChatCompletion.create(
             model=model,
