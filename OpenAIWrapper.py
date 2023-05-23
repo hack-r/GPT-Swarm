@@ -1,8 +1,3 @@
-ChatGPT
-Certainly! Here's an updated version of the OpenAIWrapper class that allows the user to select GPT-4 as the model if desired:
-
-python
-Copy code
 import openai
 
 class OpenAIWrapper:
