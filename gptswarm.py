@@ -19,7 +19,7 @@ def ask_gpt4(question, model="gpt-4"):
         response = openai.ChatCompletion.create(
             model=model,
             messages=[
-                {"role": "system", "content": "You are a helpful assistant and expert at planning software projects."},
+                {"role": "system", "content": "You are a helpful assistant and expert at writing code."},
                 {"role": "user", "content": question},
             ]
         )
