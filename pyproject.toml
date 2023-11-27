@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gpt-swarm"
+version = "0.1.0"
+description = ""
+authors = ["Jason Miller <info@nooiq.co>"]
+readme = "README.md"
+packages = [{include = "gpt_swarm"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
