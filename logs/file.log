@@ -1,0 +1,36 @@
+2023-11-27 00:40:09,788 - aux.logger - INFO - Priming with subject: Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.
+2023-11-27 00:40:09,788 - aux.logger - INFO - Priming with subject: Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.
+2023-11-27 00:40:09,788 - aux.logger - INFO - Priming with subject: Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.
+2023-11-27 00:40:09,788 - aux.logger - INFO - Priming with subject: Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.
+2023-11-27 00:40:26,470 - aux.logger - INFO - Priming with subject: [{'role': 'system', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  {subject}.'}, {'role': 'user', 'content': 'Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.'}]
+2023-11-27 00:40:26,470 - aux.logger - INFO - Priming with subject: [{'role': 'system', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  {subject}.'}, {'role': 'user', 'content': 'Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.'}]
+2023-11-27 00:40:26,470 - aux.logger - INFO - Priming with subject: [{'role': 'system', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  {subject}.'}, {'role': 'user', 'content': 'Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.'}]
+2023-11-27 00:40:26,470 - aux.logger - INFO - Priming with subject: [{'role': 'system', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  {subject}.'}, {'role': 'user', 'content': 'Here are the first 20 prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71.'}]
+2023-11-27 10:14:00,213 - aux.logger - INFO - Priming with subject: The subject of the request is "John Galt".
+2023-11-27 10:14:00,213 - aux.logger - INFO - Priming with subject: The subject of the request is "John Galt".
+2023-11-27 10:14:00,213 - aux.logger - INFO - Priming with subject: The subject of the request is "John Galt".
+2023-11-27 10:14:00,213 - aux.logger - INFO - Priming with subject: The subject of the request is "John Galt".
+2023-11-27 10:14:09,211 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:09,211 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:09,211 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:09,211 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:10,304 - aux.logger - INFO - Breaking down the tasks.
+2023-11-27 10:14:10,304 - aux.logger - INFO - Breaking down the tasks.
+2023-11-27 10:14:10,304 - aux.logger - INFO - Breaking down the tasks.
+2023-11-27 10:14:10,304 - aux.logger - INFO - Breaking down the tasks.
+2023-11-27 10:14:13,808 - aux.logger - INFO - Tasks broken down: ["You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?"]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Tasks broken down: ["You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?"]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Tasks broken down: ["You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?"]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Tasks broken down: ["You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?"]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Priming with subject: [{'role': 'user', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  The subject of the request is "John Galt"..'}]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Priming with subject: [{'role': 'user', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  The subject of the request is "John Galt"..'}]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Priming with subject: [{'role': 'user', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  The subject of the request is "John Galt"..'}]
+2023-11-27 10:14:13,808 - aux.logger - INFO - Priming with subject: [{'role': 'user', 'content': 'Be prepared to answer questions or take requested actions on the following topic:  The subject of the request is "John Galt"..'}]
+2023-11-27 10:14:18,703 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:18,703 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:18,703 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:18,703 - aux.logger - INFO - Priming successful.
+2023-11-27 10:14:27,133 - aux.logger - INFO - Task 'You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?' completed in 6.580352783203125e-05 seconds.
+2023-11-27 10:14:27,133 - aux.logger - INFO - Task 'You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?' completed in 6.580352783203125e-05 seconds.
+2023-11-27 10:14:27,133 - aux.logger - INFO - Task 'You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?' completed in 6.580352783203125e-05 seconds.
+2023-11-27 10:14:27,133 - aux.logger - INFO - Task 'You haven't provided a question for me to breakdown. Could you please provide the question or task that you need divided into parallel tasks?' completed in 6.580352783203125e-05 seconds.

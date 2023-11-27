@@ -1,3 +1,4 @@
+# gptswarm.py
 import argparse
 from aux.task_manager import run_task_manager
 from aux.settings import logger
@@ -19,7 +20,6 @@ def main():
         logger.info("Exiting the program.")
         return
 
-    # Run the task manager with the provided arguments
     run_task_manager(args)
 
 

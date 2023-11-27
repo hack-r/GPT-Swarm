@@ -1,10 +1,15 @@
+# aux/task_manager.py
 from aux.logger import setup_logging
 from aux.file_utils import save_to_file
-from aux.chat import generate_question_id, determine_subject, prime_gpt_with_subject, confirm_question_about_software, \
-    break_down_tasks, execute_tasks_in_parallel
-
-import time
-import concurrent.futures
+from aux.chat import (
+    generate_question_id,
+    get_subject,
+    prime_gpt_with_subject,
+    confirm_question_about_software,
+    break_down_tasks,
+    execute_tasks_in_parallel,
+    monitor_task_completion
+)
 
 logger = setup_logging()
 
@@ -16,12 +21,13 @@ def combine_and_process_results(task_results):
 
 def run_task_manager(args):
     question_id = generate_question_id()
-    subject = determine_subject(args.question, args.model)
+    subject = get_subject(args.question, args.model)
     if not subject:
         logger.error("Failed to determine the subject.")
         return
 
-    prime_gpt_with_subject(subject, args.model)
+    # This function now returns the conversation history
+    conversation_history = prime_gpt_with_subject(subject, args.model)
 
     confirmation = confirm_question_about_software(args.question, args.model)
 
@@ -33,21 +39,14 @@ def run_task_manager(args):
     else:
         tasks = [args.question]
 
-    start_time = time.time()
-    futures = execute_tasks_in_parallel(tasks, args.model)
+    # Pass the conversation history to execute tasks in parallel
+    futures = execute_tasks_in_parallel(tasks, conversation_history, args.model)
     task_results = []
-    for future in concurrent.futures.as_completed(futures):
-        print('Checking task: ' + future.__str__())
-        task = futures[future]
-        try:
-            result = future.result()
-            elapsed_time = time.time() - start_time
-            logger.info(f"Task '{task}' completed in {elapsed_time} seconds.")
-            task_results.append(result)
-            # Save each task result immediately after completion.
-            save_to_file(result, generate_question_id())
-        except Exception as exc:
-            logger.error(f"Task '{task}' generated an exception: {exc}")
+
+    for data in monitor_task_completion(futures):
+        task_results.append(data)
+        # Save each task result immediately after completion.
+        save_to_file(data, generate_question_id())
 
     # Once all tasks are completed, combine the results.
     final_response = combine_and_process_results(task_results)
