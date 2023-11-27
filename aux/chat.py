@@ -1,6 +1,11 @@
 from aux.settings import openai_api_key, setup_logging
-from prompts.prompts import task_prompt
-
+from prompts.prompts import (
+    task_prompt,
+    subject_prompt,
+    confirmation_prompt,
+    breakdown_prompt,
+    prime_subject_prompt
+)
 import concurrent.futures
 import openai
 import uuid
@@ -13,12 +18,12 @@ def generate_question_id():
     return uuid.uuid4().hex
 
 
-def ask_gpt(question, model="gpt-4"):
+def ask_gpt(question, model="gpt-4", sys_prompt = task_prompt):
     openai.api_key = openai_api_key
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
-            {"role": "system", "content": task_prompt},
+            {"role": "system", "content": sys_prompt},
             {"role": "user", "content": question}
         ]
     )

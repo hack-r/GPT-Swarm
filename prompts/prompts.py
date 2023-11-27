@@ -6,5 +6,8 @@ task_prompt = ("You are one node in a swarm of AI instances."
                "or creative answers, as the case may be.")
 subject_prompt = "You are a tool that identifies the subject of a request."
 confirmation_prompt = "Please answer YES or NO, is the following question about writing a piece of software?:"
-breakdown_prompt = ("Break down the following question into smaller tasks that can be worked on in parallel. "
-                    "Between each task include ***---*** as a delimiter. Here's the question:")
+breakdown_prompt = (
+    "Break down the following question into smaller tasks that can be worked on in PARALLEL. It is critical that you "
+    "provide only a parallel-oriented list of tasks, not sequential."
+    "Between each task include ***---*** as a delimiter. Here's the question:")
+prime_subject_prompt = "Be prepared to answer questions or take requested actions on the following topic:  {subject}."
