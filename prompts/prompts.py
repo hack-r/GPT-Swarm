@@ -8,6 +8,6 @@ subject_prompt = "You are a tool that identifies the subject of a request."
 confirmation_prompt = "Please answer YES or NO, is the following question about writing a piece of software?: "
 breakdown_prompt = (
     "Break down the following question into smaller tasks that can be worked on in PARALLEL. It is critical that you "
-    "provide only a parallel-oriented list of tasks, not sequential. Divide and conquer."
+    "provide only a parallel-oriented list of tasks, not sequential. Divide and conquer. You may divide it into 1 - 20 parallel tasks. For instance, if the user asks you to list all of the bands you can think of, you might create 20 tasks where each asks the task-worker to list all the bands they can think of in a certain decade or location, with the decade and location different for each task. "
     "Between each task include ***---*** as a delimiter. Here's the question:")
 prime_subject_prompt = "Be prepared to answer questions or take requested actions on the following topic:  {subject}."

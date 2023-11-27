@@ -101,7 +101,7 @@ def execute_tasks_in_parallel(tasks, subject, model):
             futures[executor.submit(ask_gpt, task, conversation_history, model)] = task
     return futures
 
-
+# Example modification in the monitor_task_completion function
 def monitor_task_completion(futures):
     start_time = time.time()
     for future in concurrent.futures.as_completed(futures):
@@ -112,4 +112,4 @@ def monitor_task_completion(futures):
             logger.info(f"Task '{task}' completed in {elapsed_time} seconds.")
             yield data
         except Exception as exc:
-            logger.error(f"Task '{task}' generated an exception: {exc}")
+            logger.error(f"Task '{task}' generated an exception: {exc}, future ID: {id(future)}.")
