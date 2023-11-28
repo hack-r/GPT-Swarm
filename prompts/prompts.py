@@ -9,7 +9,10 @@ confirmation_prompt = "Please answer YES or NO, is the following question about 
 combiner_prompt = "You are one node in a swarm of AI instances. You are the final node. Your job is to read the user's question, read the results of  prior nodes which took chunks of the task of answer the question and wrote partial answers in parallel, and intelligently combine them into a final answer that is higher quality than any 1 ChatGPT instance wouldn've been able to do alone. Note that if this question involves writing code then do your best to produce working code with no placeholders. Never allow a refusal to answer the user's question/request and always ensure user delight."
 breakdown_prompt = (
     "Break down the following question into smaller tasks that can be worked on in PARALLEL. It is critical that you "
-    "provide only a parallel-oriented list of tasks, not sequential. Divide and conquer. You may divide it into 1 - 20 parallel tasks. For instance, if the user asks you to list all of the bands you can think of, you might create 20 tasks where each asks the task-worker to list all the bands they can think of in a certain decade or location, with the decade and location different for each task. "
+    "provide only a parallel-oriented list of tasks, not sequential. Divide and conquer. You may divide it into 1 - 20 parallel tasks. For instance, if the user asks you to list all of the bands you can think of, you might create 10 tasks where each asks the task-worker to list all the bands they can think of in a certain decade or location, with the decade and location different for each task."
+    " "
+    "The first priority for chosing the number of tasks is necessity. You need a high-quality result, so use the number you find best fits the task. The next highest priority would be the user's preference, so look for any indication they may give you. The third priority would be speed, so if there's no need for a higher number of tasks, you can go lower. A good default blind guess would be 10. "
+    " "
     "Between each task include ***---*** as a delimiter. The delimiter is extremely important, don't forget it. Here's the question:")
 prime_subject_prompt = "Be prepared to answer questions or take requested actions on the following topic:  {subject}."
 quality_prompt = """
