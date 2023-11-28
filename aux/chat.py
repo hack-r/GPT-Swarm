@@ -1,11 +1,14 @@
 from aux.settings import openai_api_key, setup_logging
+from aux.quality_check import check_task_output as quality_check
 from prompts.prompts import (
     task_prompt,
     subject_prompt,
     confirmation_prompt,
     breakdown_prompt,
-    prime_subject_prompt
+    prime_subject_prompt,
+    combiner_prompt
 )
+
 import concurrent.futures
 import openai
 import uuid
@@ -13,10 +16,8 @@ import time
 
 logger = setup_logging()
 
-
 def generate_question_id():
     return uuid.uuid4().hex
-
 
 def ask_gpt(task, conversation_history, model="gpt-4"):
     openai.api_key = openai_api_key
@@ -47,11 +48,10 @@ def prime_gpt_with_subject(subject, model):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": "Prepare to answer questions on the subject being provided by the user."},
             prime_message
         ]
     )
-    # Check if the priming was successful before returning the conversation history
     if "content" in response.choices[0].message:
         logger.info("Priming successful.")
         return [prime_message]
@@ -69,15 +69,15 @@ def confirm_question_about_software(question, model):
 
 def break_down_tasks(question, num_tasks, model):
     logger.info("Breaking down the tasks.")
-    breakdown_prompt_full = breakdown_prompt.format(question=question)
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": breakdown_prompt_full}
+            {"role": "system", "content": breakdown_prompt},
+            {"role": "user", "content": question}
         ]
     )
     # Check if the breakdown was successful and return the tasks
+    print("Breakdown:",  response.choices[0].message)
     if "content" in response.choices[0].message:
         tasks_response = response.choices[0].message['content']
         tasks = tasks_response.split("***---***")
@@ -87,18 +87,25 @@ def break_down_tasks(question, num_tasks, model):
         logger.error("Failed to break down the tasks.")
         return []
 
-def execute_task(task, conversation_history, model):
-    # Pass the conversation history and the task to ask_gpt
-    return ask_gpt(task, conversation_history, model)
-
-
-def execute_tasks_in_parallel(tasks, subject, model):
+#Workhorse
+def execute_tasks_in_parallel(tasks, conversation_history, subject, model):
     futures = {}
-    conversation_history = prime_gpt_with_subject(subject, model)
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        for task in tasks:
-            # Schedule each task to start with the primed conversation history
-            futures[executor.submit(ask_gpt, task, conversation_history, model)] = task
+        # Submit all tasks to the executor
+        future_to_task = {executor.submit(ask_gpt, task, conversation_history, model): task for task in tasks}
+
+        # As futures complete, apply quality check
+        for future in concurrent.futures.as_completed(future_to_task):
+            task = future_to_task[future]
+            try:
+                result = future.result()
+            except Exception as exc:
+                print(f'Task {task} generated an exception: {exc}')
+            else:
+                # Apply quality check to the completed task's result
+                checked_task = quality_check(result, task)
+                # Update the dictionary with the task that passed the quality check
+                futures[future] = checked_task
     return futures
 
 # Example modification in the monitor_task_completion function
@@ -113,3 +120,20 @@ def monitor_task_completion(futures):
             yield data
         except Exception as exc:
             logger.error(f"Task '{task}' generated an exception: {exc}, future ID: {id(future)}.")
+
+def combine_and_process_results(task_results, model):
+    combined_tasks = "\n\n **** SUB-TASK RESULT ****".join(task_results)
+
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": combiner_prompt},
+            {"role": "user", "content": combined_tasks}
+        ]
+    )
+
+
+    # Assuming the last message is the model's response to the combined tasks
+    result_text = response.choices[0].message['content'].strip()
+
+    return result_text

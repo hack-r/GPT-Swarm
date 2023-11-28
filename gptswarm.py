@@ -9,7 +9,7 @@ def main():
     parser.add_argument("question", nargs="?", default=None, help="Ask a question (or type 'exit' to quit)")
     parser.add_argument("--num_tasks", type=int, default=None, help="Number of tasks to perform in parallel")
     parser.add_argument("--model", choices=["gpt-3", "gpt-4"], default="gpt-4", help="Specify the GPT model to use")
-    parser.add_argument("--mode", choices=["normal", "argue"], default="normal", help="Specify the mode of operation")
+    parser.add_argument("--mode", choices=["normal", "discuss"], default="normal", help="Specify the mode of operation")
 
     args = parser.parse_args()
 

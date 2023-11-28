@@ -1,4 +1,7 @@
+from prompts.prompts import quality_prompt
+
 import openai
+import os
 
 def check_task_output(task_prompt, task_response):
     # Assuming you have set your OPENAI_API_KEY as an environment variable
@@ -9,7 +12,7 @@ def check_task_output(task_prompt, task_response):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # or another model if preferred
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": quality_prompt},
                 {"role": "user", "content": task_prompt},
                 {"role": "assistant", "content": task_response},
                 {"role": "user", "content": "Check the quality of the above output."},
